@@ -1,4 +1,4 @@
-name: terragrunt
+name: terragrunt-snap
 version: "0.44.5"
 summary: A thin wrapper for Terraform 
 license: MIT
