@@ -1,0 +1,32 @@
+name: Build and Test
+
+on:
+  workflow_call:
+    outputs:
+      snap:
+        description: "Filename of the built snap"
+        value: ${{ jobs.main.outputs.snap }}
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    outputs:
+      snap: ${{ steps.snapcraft.outputs.snap }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Build snap locally
+        uses: snapcore/action-build@v1
+        id: snapcraft
+
+      - name: Upload locally built snap artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: local-${{ steps.snapcraft.outputs.snap }}
+          path: ${{ steps.snapcraft.outputs.snap }}
+
+      - name: Install snap & invoke terragrunt
+        run: |
+          sudo snap install --dangerous --classic ${{ steps.snapcraft.outputs.snap }}
+          terragrunt --version
