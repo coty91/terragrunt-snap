@@ -1,0 +1,32 @@
+name: Pull Request
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "snap/snapcraft.yaml"
+      - ".github/workflows/**.yaml"
+
+jobs:
+  build-and-test:
+    uses: ./.github/workflows/build-and-test.yaml
+
+  # Publishes the snap to a branch for QA purposes only
+  publish:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: local-${{ needs.build-and-test.outputs.snap }}
+
+      - name: Release snap to branch
+        uses: snapcore/action-publish@master
+        with:
+          snap: ${{ needs.build-and-test.outputs.snap }}
+          release: edge/pr-${{ env.PR }}
+        env:
+          PR: ${{ github.event.number }}
+          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.STORE_LOGIN }}

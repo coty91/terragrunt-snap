@@ -9,12 +9,13 @@ website: https://github.com/gruntwork-io/terragrunt
 description: Terragrunt is a thin wrapper for Terraform that provides extra tools for working with multiple Terraform modules.
 base: core22
 grade: stable
-confinement: classic
+confinement: strict
 compression: lzo
 
 apps:
   terragrunt:
     command: terragrunt
+    plugs: ["home", "personal-files"]
 
 architectures:
   - build-on: amd64
