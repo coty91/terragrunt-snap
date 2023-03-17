@@ -15,7 +15,7 @@ compression: lzo
 apps:
   terragrunt:
     command: terragrunt
-    plugs: ["home", "personal-files"]
+    plugs: ["home"]
 
 architectures:
   - build-on: amd64
